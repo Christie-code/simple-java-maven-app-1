@@ -1,19 +1,26 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.1-adoptopenjdk-11'
-            args '-v /root/.m2:/root/.m2'
-        }
-        docker {
-             image 'node:lts-bullseye-slim'
-             args '-p 3000:3000'
-        }
-    }
+    agent none
 
     options {
         skipStagesAfterUnstable()
     }
     stages {
+        stage('Maven') {
+            agent {
+                docker {
+                     image 'maven:3.8.1-adoptopenjdk-11'
+                     args '-v /root/.m2:/root/.m2'
+                }
+            }
+        }
+        stage('Node') {
+            agent {
+                docker {
+                     image 'node:lts-bullseye-slim'
+                     args '-p 3000:3000'
+                }
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
