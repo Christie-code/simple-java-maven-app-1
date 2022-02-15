@@ -5,6 +5,8 @@ pipeline {
             args '-v /root/.m2:/root/.m2'
         }
     }
+    tools {nodejs "node"}
+
     options {
         skipStagesAfterUnstable()
     }
@@ -12,10 +14,13 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
+                sh 'npm install'
             }
         }
         stage('Test') {
             steps {
+                // sh 'npm test'
+                // sh 'npx percy exec -- mvn test'
                 sh 'mvn test'
             }
             post {
